@@ -1,0 +1,123 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        /* font-family: "Poppins"; */
+        margin: 0;
+        padding: 0;
+      }
+
+      .invoice {
+        width: 800px;
+        margin: 20px auto;
+        border: 1px solid #ccc;
+        padding: 20px;
+      }
+
+      .invoice-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .invoice-header h1 {
+        font-size: 24px;
+        color: #333;
+        margin: 0;
+      }
+
+      .invoice-header p {
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+      }
+
+      .invoice-details {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .invoice-details div {
+        flex: 1;
+      }
+
+      .invoice-details div p {
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+      }
+
+      .invoice-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .invoice-table th,
+      .invoice-table td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+      }
+
+      .invoice-table th {
+        background-color: #f2f2f2;
+      }
+
+      .invoice-total {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+
+      .invoice-total p {
+        font-size: 16px;
+        color: #333;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invoice">
+      <div class="invoice-header">
+        <h1>Invoice</h1>
+        <h6>{{ now }}</h6>
+      </div>
+      <div class="invoice-details">
+        <div>
+          <p>Invoice No: 12345</p>
+          <p>Customer: John Doe</p>
+        </div>
+        <div>
+          <p>Due Date: 15/01/2022</p>
+          <p>Payment Method: Credit Card</p>
+        </div>
+      </div>
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Sub Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in data %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.qty }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ (item.price) * item.qty }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="invoice-total">10000</div>
+    </div>
+  </body>
+</html>

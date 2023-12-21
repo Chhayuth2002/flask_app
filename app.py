@@ -1,3 +1,4 @@
+import routes
 from flask import Flask, render_template, request, redirect, Response
 from sqlalchemy import create_engine, text
 
@@ -10,6 +11,5 @@ engine = create_engine("mysql+mysqlconnector://flask:root@localhost/flask")
 connection = engine.connect()
 
 
-@app.route('/')
-def hello():
-    return 'Hello, World!'
+if __name__ == '__main__':
+    app.run()
