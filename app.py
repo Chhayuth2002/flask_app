@@ -1,15 +1,16 @@
-import routes
-from flask import Flask, render_template, request, redirect, Response
+from flask import Flask, render_template, request, redirect, Response, jsonify
 from sqlalchemy import create_engine, text
-
+from sqlalchemy.ext.declarative import declarative_base
+from models import Product, Category, Sale, Customer, Base  
+from flask_cors import CORS
 app = Flask(__name__)
 
 
-# Connect to the database
 engine = create_engine("mysql+mysqlconnector://flask:root@localhost/flask")
-# Test the connection
 connection = engine.connect()
-
+Base.metadata.create_all(engine)
+import routes
+CORS(app)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

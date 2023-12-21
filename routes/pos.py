@@ -1,7 +1,7 @@
-from app import app, render_template, text, engine, request, Response
 import pdfkit
 import os
 from datetime import datetime
+from app import app, render_template, text, engine, request, Response
 
 
 @app.route('/pos')
@@ -48,18 +48,24 @@ def index_pdf():
     return Response(pdf_preview, mimetype="application/pdf")
 
 
-# @app.route('/pos/create_transaction', methods=['post'])
-# def create_transaction():
-#     total_price = request.form.get('total_price')
-#     received_amount = request.form.get('received_amount')
-#     selected_product = request.form.get('selected_product')
+@app.route('/pos/createSale', methods=['post'])
+def createSale():
+    total_price = request.form.get('total_price')
+    received_amount = request.form.get('received_amount')
+    selected_product = request.form.get('selected_product')
 
-#     # insert sale transaction
-#     result = connection.execute(
-#         text("INSERT INTO sale (date, customer_id) VALUES ('2023-12-16', 1)"))
-#     sale_id = result.lastrowid
-#     connection.commit()
-#     return '12'
+    with engine.connect() as con:
+        # insert sale transaction
+        result = con.execute(
+            text(
+                "INSERT INTO sale (date, price, customer_id) VALUES (now(), :total_price, 1)"),
+            {"total_price": float(total_price)}
+        )
+        sale_id = result.lastrowid
+        con.commit()
+
+    print(total_price)
+    return '12'
 
 
 @app.route('/getAllProduct')
@@ -94,6 +100,7 @@ def getAllProduct():
         ]
 
         return result
-
+    except Exception as e:
+        return f'Error: {str(e)}', 500
     finally:
         con.close()
