@@ -1,85 +1,79 @@
-{% extends 'admin/layout.html' %} {% block title %}Category{% endblock %} {%
-block main_conntent %}
-<!-- Main content -->
+{% extends 'admin/layout.html' %} {% block title %}Categories{% endblock %} {%
+  block main_conntent %}
 
-<div class="content">
-  <div class="container-fluid">
-    <div class="row mt-3">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header">
-            <div class="content-header">
-              <div class="container-fluid">
-                <div class="row mb-2">
-                  <div class="col-6">
-                    <h1 class="m-0" style="text-transform: uppercase">
-                      <i class="fas fa-walking"></i>
-                      Category List
-                    </h1>
-                  </div>
-                  <div class="col-6">
-                    <a href="{{ url_for('addCategoryIndex') }}">
-                      <button
-                        type="button"
-                        class="btn btn-outline-success float-right"
-                      >
-                        Add New <i class="fas fa-plus-circle"></i>
-                      </button>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-sm table-borderless table-striped">
-                <thead>
-                  <tr class="bg-secondary">
-                    <th>Name</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for item in rows %}
-                  <tr>
-                    <td>{{ item.category_name }}</td>
-                    <td>{{ item.status }}</td>
-                    <td style="width: 190px">
-                      <a
-                        href="/admin/edit_category_index/{{ item.category_id }}"
-                      >
-                        <button type="button" class="btn btn-outline-warning">
-                          <i class="far fa-edit"></i>
-                          Edit
-                        </button>
-                      </a>
-                      <form
-                        style="float: right"
-                        method="post"
-                        action="{{ url_for('delete_category') }}"
-                      >
-                        <input
-                          type="hidden"
-                          value="{{ item.category_name }}"
-                          name="category_name"
-                        />
-                        <button type="submit" class="btn btn-outline-danger">
-                          <i class="far fa-trash-alt"></i>
-                          Delete
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
+
+<div id="app2" class="container-xxl flex-grow-1 container-p-y" >
+  <div class="row ">
+    <div class="col-6">
+      <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Categories /</span> Index</h4>
+    </div>
+    <div class="col-6">
+      <a href="{{ url_for('') }}">
+        <button class="btn btn-primary mt-3" style="float: right;">Create</button>
+      </a>
+  
     </div>
   </div>
+  <div v-show="loading" style="z-index: 999; position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: rgba(255, 255, 255, 0.8);">     
+     <div class="spinner-border spinner-border-lg text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <!-- Table -->
+  <div class="card">
+    <div class="table-responsive text-nowrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+          <tr v-for="item in category_list" :key="item.category_id">
+            <td><strong>[[ item.category_id ]]</strong></td>
+            <td>[[item.category_name]]</td>
+            <td>[[item.status]]</td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="javascript:void(0);"
+                    ><i class="bx bx-edit-alt me-1"></i> Edit</a
+                  >
+                  <a class="dropdown-item" href="javascript:void(0);"
+                    ><i class="bx bx-trash me-1"></i> Delete</a
+                  >
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!--/ Table -->
+
 </div>
+<script>
+  var app = new Vue({
+      el:'#app2',
+      delimiters: ["[[", "]]"],
+      data:{
+          category_list: [],
+          loading:false
+      },
+      mounted() {
+        this.loading=true
+        axios.get("http://127.0.0.1:5000/api/category").then((response) => {
+          this.category_list = response.data;
+          this.loading=false
+        });
+      }
+  })
+</script>
 {% endblock %}

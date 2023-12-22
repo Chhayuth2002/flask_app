@@ -4,27 +4,31 @@
 
 <div id="app1" class="container-xxl flex-grow-1 container-p-y" >
     <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Sales /</span> Index</h4>
-
+    <div v-show="loading" style="z-index: 999; position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: rgba(255, 255, 255, 0.8);">     
+       <div class="spinner-border spinner-border-lg text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
     <!-- Table -->
     <div class="card">
-      <h5 class="card-header">Table Basic</h5>
+      <!-- <h5 class="card-header">Table Basic</h5> -->
       <div class="table-responsive text-nowrap">
         <table class="table">
           <thead>
             <tr>
-              <th>Project</th>
-              <th>Client</th>
-              <th>Users</th>
-              <th>Status</th>
+              <th>No.</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Price</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody class="table-border-bottom-0">
-            <tr v-for="sale in sale_list" :key="sale.id">
-              <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>[[ sale.id ]]</strong></td>
-              <td>Albert Cook</td>
-              <td></td>
-              <td><span class="badge bg-label-primary me-1">Active</span></td>
+            <tr v-for="sale in sale_list" :key="sale.sale_id">
+              <td><strong>[[ sale.sale_id ]]</strong></td>
+              <td>[[sale.customer_id]]</td>
+              <td>[[sale.date]]</td>
+              <td><span class="badge bg-label-primary me-1">[[sale.price]]</span></td>
               <td>
                 <div class="dropdown">
                   <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
@@ -53,14 +57,15 @@
         el:'#app1',
         delimiters: ["[[", "]]"],
         data:{
-            sale_list: []
+            sale_list: [],
+            loading:false
         },
         mounted() {
-            $.LoadingOverlay("show");
-            axios.get("http://127.0.0.1:5000/getAllProduct").then((responese) => {
-                this.sale_list = responese.data
-                $.LoadingOverlay("hide");
-            })
+          this.loading=true
+          axios.get("http://127.0.0.1:5000/api/sales").then((response) => {
+            this.sale_list = response.data;
+            this.loading=false
+          });
         }
     })
   </script>
