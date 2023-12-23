@@ -10,7 +10,7 @@ def sale_to_json(sale):
         'customer_id': sale.customer_id,
     }
 
-@app.route('/api/sales', methods=['GET'])
+@app.route('/api/sale', methods=['GET'])
 def get_sales():
     Session = sessionmaker(bind=engine)
     session = Session()

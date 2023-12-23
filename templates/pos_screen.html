@@ -192,10 +192,6 @@
             </div>
         </div>
     </div>
-
-
-    <div class="container mt-5 pb-5">
-    </div>
 </div>
 
 </body>
@@ -222,7 +218,6 @@
         },
         methods: {
             changeColor() {
-
                 let arr_color = [
                     'bg-danger',
                     'bg-primary',
@@ -317,7 +312,7 @@
                     formData.append('total_price', this.total_price)
                     formData.append('received_amount', this.received_amount)
                     formData.append('selected_product', JSON.stringify(this.selected_product))
-                    // console.log(formData)
+                    console.log(formData)
                     axios.post('http://127.0.0.1:5000/pos/createSale', formData).then(response => {
                         console.log(response.data)
                     }).catch(function (error) {

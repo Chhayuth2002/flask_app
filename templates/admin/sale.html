@@ -82,7 +82,7 @@
     },
     mounted() {
       this.loading = true;
-      axios.get("http://127.0.0.1:5000/api/sales").then((response) => {
+      axios.get("http://127.0.0.1:5000/api/sale").then((response) => {
         this.sale_list = response.data;
         this.loading = false;
       });

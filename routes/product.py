@@ -1,4 +1,4 @@
-from app import app, request, engine, jsonify, Product
+from app import app, request, engine, jsonify, Product, Category
 from sqlalchemy.orm import sessionmaker
 from routes.category import category_to_json
 
@@ -52,12 +52,17 @@ def add_product():
     Session = sessionmaker(bind=engine)
 
     with Session() as session:
-        
         session.add(new_product)
         session.commit()
         session.refresh(new_product)
 
-    return jsonify(product_to_json(new_product)), 201
+        new_json = product_to_json(new_product)
+        category = session.query(Category).filter_by(
+            category_id=new_product.category_id).first()
+
+        new_json['category'] = category.category_name if new_product.category else None
+
+    return jsonify(new_json), 201
 
 
 @app.route('/api/product/<int:id>', methods=['GET'])
@@ -83,7 +88,11 @@ def edit_product():
     Session = sessionmaker(bind=engine)
 
     with Session() as session:
-        product = session.query(Product).filter_by(product_id=product_id).first()
+        product = session.query(Product).filter_by(
+            product_id=product_id).first()
+
+        category = session.query(Category).filter_by(
+            category_id=data['category_id']).first()
 
         if product:
             product.product_name = data['product_name']
@@ -95,7 +104,10 @@ def edit_product():
             session.commit()
             session.refresh(product)
 
-            return jsonify(product_to_json(product))
+            new_json = product_to_json(product)
+            new_json['category'] = category.category_name if product.category else None
+
+            return jsonify(new_json), 201
         else:
             return jsonify({'message': 'Product not found'}), 404
 

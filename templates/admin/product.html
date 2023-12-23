@@ -229,7 +229,7 @@
         this.selectedProduct = {
           product_name: "",
           status: "True",
-          category_id:this.category_list[0].category_id || null
+          category_id: this.category_list[0].category_id || null,
         };
       },
       editModal(product) {
@@ -263,7 +263,7 @@
             .put("http://127.0.0.1:5000/api/product", data)
             .then((response) => {
               this.$set(this.product_list, index, response.data);
-
+              console.log(response.data);
               Toastify({
                 text: "Product updated",
                 duration: 5000,
@@ -278,6 +278,7 @@
           axios
             .post("http://127.0.0.1:5000/api/product", data)
             .then((response) => {
+              console.log(response.data);
               this.product_list.push(response.data);
 
               Toastify({

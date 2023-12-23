@@ -1,7 +1,8 @@
 import pdfkit
 import os
 from datetime import datetime
-from app import app, render_template, text, engine, request, Response
+from app import app, render_template, text, engine, request, Response, Sale
+from sqlalchemy import insert
 
 
 @app.route('/pos')
@@ -55,12 +56,10 @@ def createSale():
     selected_product = request.form.get('selected_product')
 
     with engine.connect() as con:
-        # insert sale transaction
-        result = con.execute(
-            text(
-                "INSERT INTO sale (date, price, customer_id) VALUES (now(), :total_price, 1)"),
-            {"total_price": float(total_price)}
-        )
+        # result = con.execute(query, total_price=total_price)
+        stmt = insert(Sale).values(date=datetime.now(),
+                                   customer_id=1, price=total_price)
+        result = con.execute(stmt)
         sale_id = result.lastrowid
         con.commit()
 

@@ -39,12 +39,13 @@ class Product(Base):
     category_id = Column(Integer, ForeignKey('category.category_id'))
 
     category = relationship("Category", back_populates="products")
-    sale_detail = relationship("SaleDetail", back_populates="product")  
+    sale_detail = relationship("SaleDetail", back_populates="product")
+
 
 class Sale(Base):
     __tablename__ = 'sale'
     sale_id = Column(Integer, primary_key=True, autoincrement=True)
-    date = Column(DateTime, nullable=False, default=datetime.utcnow)
+    date = Column(DateTime, default=datetime.utcnow)
     price = Column(Float, nullable=False)
     customer_id = Column(Integer, ForeignKey('customer.customer_id'))
 
