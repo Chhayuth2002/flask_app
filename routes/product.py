@@ -57,9 +57,6 @@ def add_product():
         session.commit()
         session.refresh(new_product)
 
-    
-    
-
     return jsonify(product_to_json(new_product)), 201
 
 
