@@ -14,9 +14,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>
-      Admin Dashboard
-    </title>
+    <title>Admin Dashboard</title>
 
     <meta name="description" content="" />
 
@@ -74,7 +72,14 @@
 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-loading-overlay/2.1.7/loadingoverlay.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-loading-overlay/2.1.7/loadingoverlay.min.js"></script> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
     <!-- Helpers -->
     <script src="../../static/admin/assets/vendor/js/helpers.js"></script>
 
@@ -94,7 +99,7 @@
           class="layout-menu menu-vertical menu bg-menu-theme"
         >
           <div class="app-brand demo">
-            <a href="{{ url_for('admin') }}" class="app-brand-link">
+            <a href="{{ url_for('dashboard') }}" class="app-brand-link">
               <span class="app-brand-text demo menu-text fw-bolder ms-2"
                 >Sneat</span
               >
@@ -112,8 +117,10 @@
 
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
-            <li class="menu-item active">
-              <a href="{{ url_for('admin') }}" class="menu-link">
+            <li
+              class="menu-item {% if request.endpoint == 'dashboard' %}active{% endif %}"
+            >
+              <a href="{{ url_for('dashboard') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
               </a>
@@ -124,25 +131,30 @@
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Catalog</span>
             </li>
-            <li class="menu-item">
+            <li
+              class="menu-item {% if request.endpoint == 'sale' %}active{% endif %}"
+            >
               <a href="{{ url_for('sale') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-dock-top"></i>
                 <div data-i18n="Basic">Sales</div>
               </a>
             </li>
-            <li class="menu-item">
+            <li
+              class="menu-item {% if request.endpoint == 'product' %}active{% endif %}"
+            >
               <a href="{{ url_for('product') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-dock-top"></i>
                 <div data-i18n="Basic">Products</div>
               </a>
             </li>
-            <li class="menu-item">
+            <li
+              class="menu-item {% if request.endpoint == 'category' %}active{% endif %}"
+            >
               <a href="{{ url_for('category') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-dock-top"></i>
                 <div data-i18n="Basic">Categories</div>
               </a>
             </li>
-
           </ul>
         </aside>
         <!-- / Menu -->
@@ -179,6 +191,7 @@
                     class="form-control border-0 shadow-none"
                     placeholder="Search..."
                     aria-label="Search..."
+                    disabled
                   />
                 </div>
               </div>
@@ -343,7 +356,6 @@
       <div class="layout-overlay layout-menu-toggle"></div>
     </div>
     <!-- / Layout wrapper -->
-   
 
     <!-- Core JS -->
     <!-- build:js admin/assets/vendor/js/core.js -->
@@ -363,12 +375,12 @@
 
     <!-- Page JS -->
     <script src="../../static/admin/assets/js/dashboards-analytics.js"></script>
-    
+
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-
-    
-    
-   
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
   </body>
 </html>

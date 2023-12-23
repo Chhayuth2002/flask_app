@@ -23,7 +23,7 @@ def get_categories():
     
     return jsonify([category_to_json(category) for category in categories])
 
-@app.route('/api/category/<int:category_id>', methods=['GET'])
+@app.route('/api/category/<int:id>', methods=['GET'])
 def get_category(id):
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -53,47 +53,42 @@ def add_category():
     return jsonify(category_to_json(new_category)), 201
 
 
-@app.route('/api/category/<int:category_id>', methods=['PUT'])
-def edit_category(id):
+@app.route('/api/category', methods=['PUT'])
+def edit_category():
     data = request.json
-    # category_id = data['category_id']
+    category_id = data['category_id']
     
     Session = sessionmaker(bind=engine)
     session = Session()
     
     with Session() as session:
-        category = session.query(Category).filter_by(category_id=id).first()
+        category = session.query(Category).filter_by(category_id=category_id).first()
         
         if category:
             category.category_name = data['category_name']
             category.status = data['status']
             session.commit()
-            
-            # Refresh the object to avoid DetachedInstanceError
             session.refresh(category)
             
             return jsonify(category_to_json(category))
         else:
             return jsonify({'message': 'Category not found'}), 404
 
-@app.route('/api/category/<int:category_id>', methods=['DELETE'])
+@app.route('/api/category/<int:id>', methods=['DELETE'])
 def delete_category(id):
-    # data = request.json
-    # category_id = data['category_id']
-    
     Session = sessionmaker(bind=engine)
-    session = Session()
     
-    category = session.query(Category).filter_by(category_id=id).first()
+    with Session() as session:
+        category = session.query(Category).filter_by(category_id=id).first()
+
+        if category:
+            session.delete(category)
+            session.commit()
+            
+            return jsonify({'message': 'Category deleted successfully'})
+        else:
+            return jsonify({'message': 'Category not found'}), 404
     
-    if category:
-        session.delete(category)
-        session.commit()
-        session.close()
-        return jsonify({'message': 'Category deleted successfully'})
-    else:
-        session.close()
-        return jsonify({'message': 'Category not found'}), 404
 
 
     
