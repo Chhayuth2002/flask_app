@@ -1,123 +1,69 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <style>
-      body {
-        /* font-family: "Poppins"; */
-        margin: 0;
-        padding: 0;
-      }
-
-      .invoice {
-        width: 800px;
-        margin: 20px auto;
-        border: 1px solid #ccc;
-        padding: 20px;
-      }
-
-      .invoice-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-      }
-
-      .invoice-header h1 {
-        font-size: 24px;
-        color: #333;
-        margin: 0;
-      }
-
-      .invoice-header p {
-        font-size: 14px;
-        color: #666;
-        margin: 0;
-      }
-
-      .invoice-details {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-      }
-
-      .invoice-details div {
-        flex: 1;
-      }
-
-      .invoice-details div p {
-        font-size: 14px;
-        color: #666;
-        margin: 0;
-      }
-
-      .invoice-table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      .invoice-table th,
-      .invoice-table td {
-        border: 1px solid #ccc;
-        padding: 10px;
-        text-align: left;
-      }
-
-      .invoice-table th {
-        background-color: #f2f2f2;
-      }
-
-      .invoice-total {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 20px;
-      }
-
-      .invoice-total p {
-        font-size: 16px;
-        color: #333;
-        margin: 0;
-      }
-    </style>
+    <title>Title</title>
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css"
+      rel="stylesheet"
+    />
   </head>
+  <style></style>
   <body>
-    <div class="invoice">
-      <div class="invoice-header">
-        <h1>Invoice</h1>
-        <h6>{{ now }}</h6>
-      </div>
-      <div class="invoice-details">
-        <div>
-          <p>Invoice No: 12345</p>
-          <p>Customer: John Doe</p>
+    <div class="container-fluid">
+      <div class="row p-0 m-0">
+        <div class="col-12 p-0 m-0">
+          <center>
+            <img
+              src="{{ server_url+'/static/image/logo.png' }}"
+              class="rounded"
+              style="width: 100px; height: 100px"
+            />
+            <h4>វិក្កយបត្រ</h4>
+            <h6>{{ now }}</h6>
+          </center>
         </div>
-        <div>
-          <p>Due Date: 15/01/2022</p>
-          <p>Payment Method: Credit Card</p>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm table-strip">
+          <thead>
+            <tr>
+              <th style="background-color: #cccccc">No.</th>
+              <th style="background-color: #cccccc">Description</th>
+              <th style="background-color: #cccccc">Quantity</th>
+              <th style="background-color: #cccccc">Price</th>
+              <th style="background-color: #cccccc">Sub Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in data %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ item.product_name }}</td>
+              <td>{{ item.qty }}</td>
+              <td>{{ item.price }}</td>
+              <td>{{ (item.price) * item.qty }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="row p-0 m-0">
+        <div class="col-12 p-0 m-0">
+          <center>
+            <img
+              src="{{ server_url+'/static/image/pinchai_aba_qr.png' }}"
+              class="rounded"
+              style="width: 200px; height: 200px"
+            />
+            <h5>ABA|00000000</h5>
+          </center>
         </div>
       </div>
-      <table class="invoice-table">
-        <thead>
-          <tr>
-            <th>No.</th>
-            <th>Description</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Sub Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in data %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.qty }}</td>
-            <td>{{ item.price }}</td>
-            <td>{{ (item.price) * item.qty }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      <div class="invoice-total">10000</div>
     </div>
   </body>
 </html>

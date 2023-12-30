@@ -63,3 +63,4 @@ class SaleDetail(Base):
 
     sale = relationship('Sale', back_populates='sale_detail')
     product = relationship('Product', back_populates='sale_detail')
+

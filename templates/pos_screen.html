@@ -125,7 +125,7 @@
                             </td>
                         </tr>
                         <tr
-                                v-for="(item, index) in this.selected_product"
+                                v-for="(item, index) in this.selected_product" :key="item.product_id"
                         >
                             <td>[[ index + 1 ]]</td>
                             <td>[[ item.name ]]</td>
@@ -238,6 +238,7 @@
                 if (dpl == false) {
                     this.selected_product.push(
                         {
+                            'product_id': item.product_id,
                             'name': item.name,
                             'qty': 1,
                             'price': item.price,
@@ -314,21 +315,27 @@
                     formData.append('selected_product', JSON.stringify(this.selected_product))
                     console.log(formData)
                     axios.post('http://127.0.0.1:5000/pos/createSale', formData).then(response => {
-                        console.log(response.data)
+                        // console.log(response.data[0].sale_id)
+                        this.sound('success')
+                        Swal.fire({
+                            title: "Thank you !",
+                            text: "Payment is completed",
+                            icon: "success"
+                        });
+
+                        clearTimeout(this.typingTimer)
+                        this.typingTimer = setTimeout(function () {
+                        window.open("http://127.0.0.1:5000/pdf?sale_id="+response.data[0].sale_id);
+                    }, this.doneTypingInterval)
                     }).catch(function (error) {
                         alert('error: ' + error.message)
                     });
 
-                    this.sound('success')
-                    Swal.fire({
-                        title: "Thank you !",
-                        text: "Payment is completed",
-                        icon: "success"
-                    });
-                    clearTimeout(this.typingTimer)
-                    this.typingTimer = setTimeout(function () {
-                        window.open("http://127.0.0.1:5000/pdf");
-                    }, this.doneTypingInterval)
+                    
+                    // clearTimeout(this.typingTimer)
+                    // this.typingTimer = setTimeout(function () {
+                    //     window.open("http://127.0.0.1:5000/pdf?sale_id=");
+                    // }, this.doneTypingInterval)
                 }
             },
             cancelPayment() {

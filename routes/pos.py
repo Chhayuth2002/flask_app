@@ -1,8 +1,9 @@
 import pdfkit
 import os
 from datetime import datetime
-from app import app, render_template, text, engine, request, Response, Sale
+from app import app, render_template, text, engine, request, Response, Sale, SaleDetail
 from sqlalchemy import insert
+import json
 
 
 @app.route('/pos')
@@ -12,27 +13,30 @@ def pos_index():
 
 @app.route("/pdf")
 def index_pdf():
+    sale_id = request.args.get('sale_id')
+
     directory = os.path.join(os.getcwd(), 'pdf')
 
     file_path = os.path.join(directory, 'invoice.pdf')
 
-    data = [
-        {'id': 1, 'name': 'កូកាកូឡា', 'qty': 20, 'price': 0.25},
-        {'id': 1, 'name': 'sting', 'qty': 10, 'price': 0.25},
-        {'id': 1, 'name': 'abc', 'qty': 3, 'price': 25},
-        {'id': 1, 'name': 'Anchor', 'qty': 6, 'price': 25},
-        {'id': 1, 'name': 'KRUD', 'qty': 4, 'price': 25},
-        {'id': 1, 'name': 'VATANAK', 'qty': 1, 'price': 25},
-        {'id': 1, 'name': 'DRAGON', 'qty': 2, 'price': 25},
-    ]
+    with engine.connect() as con:
+        sale_list = con.execute(
+            text(f"""
+                SELECT sd.*, p.product_name, s.date as sale_date
+                FROM sale_detail sd
+                JOIN product p ON sd.product_id = p.product_id
+                JOIN sale s ON sd.sale_id = s.sale_id
+                WHERE sd.sale_id = 16;
+            """))
+        con.commit
     now = datetime.now()
     created_at = now.strftime("%Y-%m-%d %H:%M")
     server_url = request.url_root
-    html = render_template("invoice.html", data=data,
+    html = render_template("invoice.html", data=sale_list,
                            now=created_at, server_url=server_url)
     options = {
-        'page-height': '8.3in',
-        'page-width': '5.8in',
+        'page-height': '10in',
+        'page-width': '3in',
         'margin-top': '0.1in',
         'margin-right': '0in',
         'margin-bottom': '0.1in',
@@ -55,16 +59,43 @@ def createSale():
     received_amount = request.form.get('received_amount')
     selected_product = request.form.get('selected_product')
 
+    selected_product_obj = json.loads(selected_product)
+
     with engine.connect() as con:
         # result = con.execute(query, total_price=total_price)
         stmt = insert(Sale).values(date=datetime.now(),
                                    customer_id=1, price=total_price)
-        result = con.execute(stmt)
-        sale_id = result.lastrowid
+        saleRes = con.execute(stmt)
+        sale_id = saleRes.lastrowid
         con.commit()
+        for item in selected_product_obj:
+            product_id = item['product_id']
+            qty = item['qty']
+            price = item['price']
 
-    print(total_price)
-    return '12'
+            stmtS = insert(SaleDetail).values(sale_id=sale_id,
+                                              product_id=product_id, qty=qty, price=price)
+            con.execute(stmtS)
+            con.commit()
+
+        current_sale = con.execute(
+            text(f"select * from sale where sale_id={sale_id}"))
+
+        current_sale_detail = con.execute(text(
+            f"select sale_detail.* , product.product_name from sale_detail join product on sale_detail.product_id = product.product_id where sale_detail.sale_id={
+                sale_id};"
+        ))
+
+        print(current_sale)
+        print(current_sale_detail)
+
+        con.commit
+
+        html = (
+            "<strong>"
+        )
+
+    return [{'status': 'success', 'sale_id': sale_id}]
 
 
 @app.route('/getAllProduct')
@@ -83,7 +114,7 @@ def getAllProduct():
         for product in products:
             product_list.append(
                 {
-                    'id': product.product_id,
+                    'product_id': product.product_id,
                     'name': product.product_name,
                     'discount': product.discount,
                     'price': product.price,

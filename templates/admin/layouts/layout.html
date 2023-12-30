@@ -155,6 +155,14 @@
                 <div data-i18n="Basic">Categories</div>
               </a>
             </li>
+            <li
+              class="menu-item {% if request.endpoint == 'customer' %}active{% endif %}"
+            >
+              <a href="{{ url_for('customer') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                <div data-i18n="Basic">Customer</div>
+              </a>
+            </li>
           </ul>
         </aside>
         <!-- / Menu -->

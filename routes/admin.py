@@ -19,3 +19,8 @@ def category():
 @app.route('/admin/sale')
 def sale():
     return render_template('admin/sale.html')
+
+
+@app.route('/admin/customer')
+def customer():
+    return render_template('admin/customer.html')
